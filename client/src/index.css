@@ -1,63 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg-dark: #0a1628;
-  --bg-card: #112240;
-  --gold: #c8a84b;
-  --gold-hover: #b6963f;
-  --text-primary: #e6f1ff;
-  --text-secondary: #8892b0;
+@layer base {
+  body {
+    @apply bg-darkBg text-textPrimary antialiased overflow-x-hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
 }
 
-body {
-  background-color: var(--bg-dark);
-  color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  overflow-x: hidden;
+@layer components {
+  .glass {
+    @apply bg-cardBg backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl;
+  }
+  
+  .glass-card {
+    @apply glass hover:border-gold/20 transition-all duration-500 hover:shadow-gold/5;
+  }
+
+  .btn-premium {
+    @apply relative px-6 py-3 rounded-xl font-bold text-darkBg bg-gold 
+           hover:bg-goldHover transition-all duration-300 transform hover:scale-[1.02]
+           active:scale-[0.98] shadow-lg shadow-gold/20 overflow-hidden;
+  }
+
+  .neon-glow {
+    @apply absolute -inset-1 bg-gold opacity-20 blur-xl group-hover:opacity-40 transition-opacity;
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--gold);
+/* Aurora Animation Styles */
+.aurora-container {
+  @apply fixed inset-0 -z-50 overflow-hidden bg-[#020617];
 }
 
-.card {
-  background-color: var(--bg-card);
-  border: 1px solid rgba(200, 168, 75, 0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
+.aurora-blob {
+  @apply absolute rounded-full blur-[120px] mix-blend-screen animate-aurora opacity-30;
 }
 
-.card:hover {
-  border-color: var(--gold);
-  box-shadow: 0 4px 20px rgba(200, 168, 75, 0.1);
+.blob-1 {
+  @apply w-[600px] h-[600px] bg-gold -top-[10%] -left-[10%];
+  animation-duration: 40s;
 }
 
-.btn-primary {
-  background-color: var(--gold);
-  color: var(--bg-dark);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.2s;
+.blob-2 {
+  @apply w-[500px] h-[500px] bg-blue-600 top-[20%] -right-[10%];
+  animation-duration: 35s;
+  animation-direction: reverse;
 }
 
-.btn-primary:hover {
-  background-color: var(--gold-hover);
+.blob-3 {
+  @apply w-[450px] h-[450px] bg-purple-600 -bottom-[10%] left-[20%];
+  animation-duration: 45s;
 }
 
-.loading-skeleton {
-  background: linear-gradient(90deg, #112240 25%, #1a365d 50%, #112240 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+::-webkit-scrollbar-track {
+  @apply bg-darkBg;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gold/20 rounded-full hover:bg-gold/40 transition-colors;
 }

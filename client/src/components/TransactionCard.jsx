@@ -1,6 +1,6 @@
 import React from 'react';
-import { format } from 'date-fns';
-import { ShoppingBag, Utensils, Plane, Film, CreditCard } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShoppingBag, Utensils, Plane, Film, CreditCard, ShieldAlert } from 'lucide-react';
 
 const TransactionCard = ({ transaction }) => {
   const getIcon = (category) => {
@@ -16,28 +16,35 @@ const TransactionCard = ({ transaction }) => {
   const Icon = getIcon(transaction.category);
 
   return (
-    <div className="bg-[#112240] p-4 rounded-xl border border-[#c8a84b] border-opacity-5 hover:border-opacity-20 transition-all flex items-center justify-between">
+    <motion.div 
+      whileHover={{ x: 5 }}
+      className="glass-card p-4 flex items-center justify-between group"
+    >
       <div className="flex items-center space-x-4">
-        <div className="p-3 bg-[#c8a84b] bg-opacity-10 rounded-lg text-[#c8a84b]">
+        <div className="p-3 bg-gold/10 rounded-xl text-gold group-hover:bg-gold group-hover:text-darkBg transition-all duration-300">
           <Icon size={20} />
         </div>
         <div>
-          <h4 className="text-[#e6f1ff] font-semibold">{transaction.merchantName}</h4>
-          <p className="text-[#8892b0] text-sm">{format(new Date(transaction.transactionTime), 'MMM dd, yyyy • HH:mm')}</p>
+          <h4 className="text-white font-bold group-hover:text-gold transition-colors">{transaction.merchantName}</h4>
+          <p className="text-textSecondary text-[10px] uppercase font-black tracking-widest">
+            {new Date(transaction.transactionTime).toLocaleDateString()}
+          </p>
         </div>
       </div>
       <div className="text-right">
-        <p className={`font-bold ${transaction.isFraud ? 'text-red-400' : 'text-[#e6f1ff]'}`}>
+        <p className={`text-lg font-black ${transaction.isFraud ? 'text-red-400' : 'text-white'}`}>
           ₹{transaction.amount.toLocaleString()}
         </p>
-        <p className="text-xs text-[#8892b0]">{transaction.category}</p>
-        {transaction.isFraud && (
-          <span className="text-[10px] bg-red-400 bg-opacity-10 text-red-400 px-2 py-0.5 rounded-full border border-red-400 border-opacity-20">
-            Fraud Detected
-          </span>
+        {transaction.isFraud ? (
+          <div className="flex items-center justify-end space-x-1 text-red-500">
+             <ShieldAlert size={10} />
+             <span className="text-[10px] font-black uppercase tracking-tighter">Flagged</span>
+          </div>
+        ) : (
+          <p className="text-[10px] text-textSecondary font-bold uppercase">{transaction.category}</p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

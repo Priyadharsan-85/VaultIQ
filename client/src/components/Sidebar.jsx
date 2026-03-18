@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { LayoutDashboard, ReceiptText, ShieldAlert, TrendingUp, WalletCards } from 'lucide-react';
 
 const Sidebar = () => {
@@ -14,38 +15,52 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-[#112240] h-screen border-r border-[#c8a84b] border-opacity-10 py-8 flex flex-col">
-      <div className="px-8 mb-10">
-        <div className="w-12 h-12 rounded-xl bg-[#c8a84b] flex items-center justify-center shadow-lg shadow-[#c8a84b1a]">
-          <WalletCards size={28} className="text-[#0a1628]" />
-        </div>
+    <aside className="w-72 glass h-[calc(100vh-2rem)] m-4 border-r-0 py-8 flex flex-col z-50">
+      <div className="px-8 mb-12">
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold to-goldHover flex items-center justify-center shadow-2xl shadow-gold/20"
+        >
+          <WalletCards size={32} className="text-darkBg" />
+        </motion.div>
       </div>
       
-      <nav className="flex-1 px-4 space-y-2">
-        {menuItems.map((item) => {
+      <nav className="flex-1 px-4 space-y-3">
+        {menuItems.map((item, i) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
           return (
-            <Link
+            <motion.div
               key={item.name}
-              to={item.path}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                isActive 
-                ? 'bg-[#c8a84b] bg-opacity-10 text-[#c8a84b] border border-[#c8a84b] border-opacity-20' 
-                : 'text-[#8892b0] hover:text-[#e6f1ff] hover:bg-[#c8a84b] hover:bg-opacity-5'
-              }`}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: i * 0.1 }}
             >
-              <Icon size={20} />
-              <span className="font-medium text-sm">{item.name}</span>
-            </Link>
+              <Link
+                to={item.path}
+                className={`group relative flex items-center space-x-4 px-6 py-4 rounded-2xl transition-all duration-300 ${
+                  isActive 
+                  ? 'bg-gold/10 text-gold border border-gold/20 shadow-lg shadow-gold/5' 
+                  : 'text-textSecondary hover:text-textPrimary hover:bg-white/5'
+                }`}
+              >
+                {isActive && <motion.div layoutId="activeNav" className="absolute left-0 w-1.5 h-6 bg-gold rounded-full" />}
+                <Icon size={22} className={isActive ? 'text-gold' : 'group-hover:text-gold transition-colors'} />
+                <span className="font-bold text-sm tracking-wide">{item.name}</span>
+              </Link>
+            </motion.div>
           );
         })}
       </nav>
 
-      <div className="px-8 mt-auto">
-        <div className="p-4 rounded-xl bg-[#0a1628] border border-[#c8a84b] border-opacity-10">
-          <p className="text-[10px] uppercase tracking-widest text-[#8892b0] mb-1">Current Plan</p>
-          <p className="text-xs font-bold text-[#c8a84b]">VaultIQ Pro</p>
+      <div className="px-6 mt-auto">
+        <div className="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md">
+          <p className="text-[10px] uppercase font-black tracking-[0.2em] text-textSecondary mb-2">VaultIQ Account</p>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-gold">Premium Pro</span>
+            <div className="w-2 h-2 rounded-full bg-gold animate-pulse shadow-glow"></div>
+          </div>
         </div>
       </div>
     </aside>

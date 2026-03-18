@@ -1,38 +1,52 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { LogOut, Bell, Sparkles } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <nav className="bg-[#112240] border-b border-[#c8a84b] border-opacity-10 px-8 py-4 flex justify-between items-center">
-      <div className="flex items-center space-x-4">
-        <h1 className="text-xl font-bold text-[#c8a84b] tracking-wider">VAULT<span className="text-[#e6f1ff]">IQ</span></h1>
-      </div>
+    <nav className="h-20 glass m-4 mb-0 flex items-center justify-between px-8 z-40 border-0">
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="flex items-center space-x-2"
+      >
+        <Sparkles size={24} className="text-gold animate-pulse" />
+        <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gold to-white uppercase tracking-tighter">
+          VAULT<span className="text-gold">IQ</span>
+        </span>
+      </motion.div>
 
       <div className="flex items-center space-x-6">
+        <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl text-textSecondary hover:text-gold transition-all">
+          <Bell size={20} />
+          <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-[#020617]"></span>
+        </button>
+
         {user ? (
-          <>
-            <div className="flex items-center space-x-3 text-[#e6f1ff]">
-              <div className="w-8 h-8 rounded-full bg-[#c8a84b] bg-opacity-20 flex items-center justify-center border border-[#c8a84b] border-opacity-30">
-                <UserIcon size={16} className="text-[#c8a84b]" />
-              </div>
-              <span className="text-sm font-medium">Hello, {user.name}</span>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex items-center space-x-4 bg-white/5 pl-4 pr-1 py-1 rounded-2xl border border-white/5"
+          >
+            <div className="flex flex-col items-end">
+              <span className="text-sm font-bold text-textPrimary">{user.name}</span>
+              <span className="text-[10px] text-gold font-black uppercase tracking-widest">Premium Pro</span>
             </div>
             <button 
               onClick={logout}
-              className="flex items-center space-x-2 bg-red-500 bg-opacity-10 text-red-400 px-3 py-1.5 rounded-lg border border-red-500 border-opacity-20 hover:bg-opacity-20 transition-all text-sm"
+              className="p-3 bg-white/10 hover:bg-red-500/20 text-textSecondary hover:text-red-400 rounded-xl transition-all"
             >
-              <LogOut size={16} />
-              <span>Logout</span>
+              <LogOut size={18} />
             </button>
-          </>
+          </motion.div>
         ) : (
-          <div className="flex space-x-4">
-            <Link to="/login" className="text-[#8892b0] hover:text-[#c8a84b] transition-colors text-sm font-medium">Login</Link>
-            <Link to="/register" className="bg-[#c8a84b] text-[#0a1628] px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-[#b6963f] transition-all">Register</Link>
+          <div className="flex items-center space-x-4">
+            <Link to="/login" className="text-sm font-bold text-textSecondary hover:text-gold transition-colors">Login</Link>
+            <Link to="/register" className="btn-premium py-2 text-sm shadow-gold/20">Join Now</Link>
           </div>
         )}
       </div>

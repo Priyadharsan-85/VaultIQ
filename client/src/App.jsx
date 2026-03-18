@@ -11,14 +11,16 @@ import Budget from './pages/Budget';
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
+import AuroraBackground from './components/AuroraBackground';
 
 const Layout = ({ children }) => {
   return (
-    <div className="flex h-screen bg-[#0a1628] overflow-hidden">
+    <div className="flex h-screen overflow-hidden">
+      <AuroraBackground />
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 z-10">
         <Navbar />
-        <main className="flex-1 overflow-y-auto bg-[#0a1628]">
+        <main className="flex-1 overflow-y-auto">
           {children}
         </main>
       </div>

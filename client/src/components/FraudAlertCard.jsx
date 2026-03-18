@@ -1,44 +1,54 @@
 import React from 'react';
-import { ShieldAlert } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShieldAlert, MapPin, Calendar, CheckSquare } from 'lucide-react';
 
-const FraudAlertCard = ({ alert, onReview }) => {
+const FraudAlertCard = ({ alert }) => {
   return (
-    <div className="bg-[#112240] p-6 rounded-xl border border-red-400 border-opacity-20 hover:border-opacity-40 transition-all">
-      <div className="flex items-start justify-between mb-4">
-        <div className="p-3 bg-red-400 bg-opacity-10 rounded-lg text-red-400">
-          <ShieldAlert size={24} />
-        </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-          alert.status === 'pending' ? 'bg-yellow-400 bg-opacity-10 text-yellow-400' : 'bg-green-400 bg-opacity-10 text-green-400'
-        }`}>
-          {alert.status.toUpperCase()}
-        </span>
-      </div>
-      
-      <h3 className="text-[#e6f1ff] font-bold text-lg mb-1">Potential Fraud Detected</h3>
-      <p className="text-[#8892b0] text-sm mb-4">{alert.reason}</p>
-      
-      <div className="flex items-center space-x-2 mb-6">
-        <div className="flex-1 h-2 bg-[#0a1628] rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-red-400" 
-            style={{ width: `${alert.confidenceScore}%` }}
-          />
-        </div>
-        <span className="text-red-400 font-bold text-sm">{alert.confidenceScore}% Confidence</span>
+    <motion.div 
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      whileHover={{ scale: 1.02 }}
+      className="glass-card p-6 border-l-4 border-l-red-500 relative overflow-hidden group"
+    >
+      <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+        <ShieldAlert size={80} className="text-red-500" />
       </div>
 
-      {alert.status === 'pending' && (
-        <div className="flex space-x-3">
-          <button 
-            onClick={() => onReview('reviewed')}
-            className="flex-1 py-2 bg-[#c8a84b] text-[#0a1628] rounded-lg font-bold text-sm hover:bg-[#b6963f] transition-colors"
-          >
-            Mark as Reviewed
+      <div className="relative z-10 space-y-4">
+        <div className="flex justify-between items-start">
+          <div>
+            <span className="bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-red-500/20">
+              High Risk Detected
+            </span>
+            <h3 className="text-xl font-black text-white mt-3 italic">₹{alert.Transaction.amount.toLocaleString()}</h3>
+          </div>
+          <div className="p-3 bg-red-500/10 rounded-xl text-red-400">
+            <ShieldAlert size={24} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 pt-2">
+          <div className="flex items-center space-x-2 text-sm text-textSecondary">
+            <CheckSquare size={16} className="text-red-500/50" />
+            <span className="font-bold">{alert.Transaction.merchantName}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-sm text-textSecondary">
+            <MapPin size={16} className="text-red-500/50" />
+            <span className="font-bold">{alert.Transaction.location}</span>
+          </div>
+        </div>
+
+        <div className="pt-4 flex items-center justify-between border-t border-white/5 mt-4">
+          <div className="flex items-center space-x-2 text-xs text-textSecondary italic">
+            <Calendar size={14} />
+            <span>{new Date(alert.createdAt).toLocaleString()}</span>
+          </div>
+          <button className="text-[10px] font-black uppercase tracking-widest text-gold hover:text-white transition-colors">
+            Resolve Alert
           </button>
         </div>
-      )}
-    </div>
+      </div>
+    </motion.div>
   );
 };
 
