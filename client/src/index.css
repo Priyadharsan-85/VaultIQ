@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-dark: #0a1628;
+  --bg-card: #112240;
+  --gold: #c8a84b;
+  --gold-hover: #b6963f;
+  --text-primary: #e6f1ff;
+  --text-secondary: #8892b0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--gold);
+}
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid rgba(200, 168, 75, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 4px 20px rgba(200, 168, 75, 0.1);
+}
+
+.btn-primary {
+  background-color: var(--gold);
+  color: var(--bg-dark);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--gold-hover);
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, #112240 25%, #1a365d 50%, #112240 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
