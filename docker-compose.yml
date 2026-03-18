@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: vaultuser
+      POSTGRES_PASSWORD: vaultpassword
+      POSTGRES_DB: vaultiq_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  ml-service:
+    build: ./ml-service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-service:/app
+    environment:
+      - PORT=8000
+    depends_on:
+      - db
+
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+    environment:
+      - PORT=5000
+      - DB_HOST=db
+      - DB_USER=vaultuser
+      - DB_PASS=vaultpassword
+      - DB_NAME=vaultiq_db
+      - ML_SERVICE_URL=http://ml-service:8000
+      - JWT_SECRET=vaultiq_super_secret_key
+    depends_on:
+      - db
+      - ml-service
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - server
+
+volumes:
+  pgdata:
