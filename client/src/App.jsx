@@ -13,6 +13,8 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import AuroraBackground from './components/AuroraBackground';
 
+import ChatAssistant from './components/ChatAssistant';
+
 const Layout = ({ children }) => {
   return (
     <div className="flex h-screen overflow-hidden">
@@ -24,6 +26,7 @@ const Layout = ({ children }) => {
           {children}
         </main>
       </div>
+      <ChatAssistant />
     </div>
   );
 };
