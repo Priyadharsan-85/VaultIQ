@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
@@ -12,13 +12,40 @@ import BentoCard from '../components/BentoCard';
 import WealthHorizon from '../components/WealthHorizon';
 import ThreeDCard from '../components/ThreeDCard';
 
+import axios from 'axios';
+
 const Dashboard = () => {
-  const [stats] = useState({
-    totalBalance: 125400,
-    monthlySpending: 45200,
+  const [stats, setStats] = useState({
+    totalBalance: 0,
+    monthlySpending: 0,
     fraudAlerts: 0,
-    commitments: 18450
+    commitments: 0,
+    monthlyIncome: 0,
+    savingsRate: 0
   });
+  const [loading, setLoading] = useState(true);
+
+  const fetchStats = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/dashboard/stats`);
+      setStats({
+        totalBalance: res.data.totalBalance,
+        monthlySpending: res.data.monthlySpending,
+        fraudAlerts: res.data.fraudAlerts,
+        commitments: res.data.totalCommitments,
+        monthlyIncome: res.data.monthlyIncome,
+        savingsRate: res.data.savingsRate
+      });
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to fetch dashboard stats:', err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const chartData = [
     { name: 'Mon', amount: 4000 },
@@ -96,7 +123,7 @@ const Dashboard = () => {
 
         {/* Cash Flow Chart */}
         <BentoCard spanCols={3} spanRows={5}>
-          <div className="p-8 h-full flex flex-col">
+          <div className="p-8 h-full flex flex-col min-h-[450px]">
             <div className="flex justify-between items-center mb-10">
               <h3 className="text-lg font-black text-white uppercase tracking-wider">Liquidity Stream</h3>
               <div className="flex gap-3 text-[10px] font-bold uppercase tracking-widest text-textSecondary">
@@ -105,7 +132,7 @@ const Dashboard = () => {
                 <span className="hover:text-white cursor-pointer px-2">Yearly</span>
               </div>
             </div>
-            <div className="flex-1 min-h-[220px]">
+            <div className="flex-1 w-full h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={chartData}>
                   <defs>

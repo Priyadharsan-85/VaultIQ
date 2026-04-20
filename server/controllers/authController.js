@@ -6,6 +6,11 @@ require('dotenv').config();
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    console.log(`Attempting registration for: ${email}`);
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Missing required credentials' });
+    }
 
     let user = await User.findOne({ where: { email } });
     if (user) {
@@ -17,16 +22,21 @@ exports.register = async (req, res) => {
 
     user = await User.create({
       name,
-      email,
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
     });
+
+    console.log(`Successfully registered: ${user.email}`);
 
     const payload = { id: user.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (err) {
-    console.error(err.message);
+    console.error('Registration Crash:', err.message);
+    if (err.name === 'SequelizeValidationError') {
+      return res.status(400).json({ message: 'Invalid data format: ' + err.errors[0].message });
+    }
     res.status(500).send('Server error');
   }
 };

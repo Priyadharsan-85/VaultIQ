@@ -1,8 +1,12 @@
-const FraudAlert = require('../models/FraudAlert');
+const { FraudAlert, Transaction } = require('../models/associations');
 
 exports.getAlerts = async (req, res) => {
   try {
-    const alerts = await FraudAlert.findAll({ where: { userId: req.user.id } });
+    const alerts = await FraudAlert.findAll({ 
+      where: { userId: req.user.id },
+      include: [Transaction],
+      order: [['createdAt', 'DESC']]
+    });
     res.json(alerts);
   } catch (err) {
     console.error(err.message);

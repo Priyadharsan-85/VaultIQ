@@ -18,6 +18,7 @@ app.use('/api/fraud', require('./routes/fraud'));
 app.use('/api/market', require('./routes/market'));
 app.use('/api/budget', require('./routes/budget'));
 app.use('/api/ai', require('./routes/ai'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
 process.on('uncaughtException', (err) => {
   console.error('💥 Uncaught Exception:', err);

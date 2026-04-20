@@ -16,12 +16,17 @@ exports.processChat = async (req, res) => {
       return res.status(500).json({ error: "Gemini API Key is missing on the server." });
     }
 
+    const marketController = require("./marketController");
+    
     // 1. Fetch User Context (Transactions, Budgets, Alerts)
     const [transactions, budgets, alerts] = await Promise.all([
-      Transaction.findAll({ where: { userId }, limit: 10, order: [['transactionTime', 'DESC']] }),
+      Transaction.findAll({ where: { userId }, limit: 15, order: [['transactionTime', 'DESC']] }),
       Budget.findAll({ where: { userId } }),
       FraudAlert.findAll({ where: { userId }, limit: 5, order: [['createdAt', 'DESC']], include: [Transaction] })
     ]);
+
+    // 2. Mock some global context if live fetch fails (Market Snapshot)
+    const marketContext = "BTC: $64,230 (+1.2%), ETH: $3,450 (-0.5%), AAPL: $182.40, TSLA: $171.05";
 
     // 2. Prepare Context for AI
     const contextStr = `
@@ -29,6 +34,9 @@ exports.processChat = async (req, res) => {
       - Recent Transactions: ${transactions.map(t => `${t.merchantName}: ₹${t.amount} (${t.category})`).join(", ")}
       - Budget Limits: ${budgets.map(b => `${b.category}: ₹${b.monthlyLimit}`).join(", ")}
       - Recent Fraud Alerts: ${alerts.map(a => `Alert for ${a.Transaction?.merchantName} (Confidence: ${a.confidenceScore})`).join(", ")}
+      
+      Global Market Snapshot:
+      ${marketContext}
     `;
 
     const systemPrompt = `

@@ -20,7 +20,9 @@ const FraudAlertCard = ({ alert }) => {
             <span className="bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-red-500/20">
               High Risk Detected
             </span>
-            <h3 className="text-xl font-black text-white mt-3 italic">₹{alert.Transaction.amount.toLocaleString()}</h3>
+            <h3 className="text-xl font-black text-white mt-3 italic">
+              ₹{alert.Transaction?.amount?.toLocaleString() || '0'}
+            </h3>
           </div>
           <div className="p-3 bg-red-500/10 rounded-xl text-red-400">
             <ShieldAlert size={24} />
@@ -30,11 +32,11 @@ const FraudAlertCard = ({ alert }) => {
         <div className="grid grid-cols-2 gap-4 pt-2">
           <div className="flex items-center space-x-2 text-sm text-textSecondary">
             <CheckSquare size={16} className="text-red-500/50" />
-            <span className="font-bold">{alert.Transaction.merchantName}</span>
+            <span className="font-bold">{alert.Transaction?.merchantName || 'Unknown Merchant'}</span>
           </div>
           <div className="flex items-center space-x-2 text-sm text-textSecondary">
             <MapPin size={16} className="text-red-500/50" />
-            <span className="font-bold">{alert.Transaction.location}</span>
+            <span className="font-bold">{alert.Transaction?.location || 'Unknown Location'}</span>
           </div>
         </div>
 
