@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
-import { TrendingUp, ShieldCheck, Wallet, ArrowUpRight } from 'lucide-react';
+import { 
+  ShieldCheck, Wallet, ArrowUpRight, Plus, 
+  CreditCard, Send, Lock, Zap
+} from 'lucide-react';
+
+import BentoCard from '../components/BentoCard';
+import WealthHorizon from '../components/WealthHorizon';
 import ThreeDCard from '../components/ThreeDCard';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     totalBalance: 125400,
     monthlySpending: 45200,
     fraudAlerts: 0,
-    savingsRate: 24
+    commitments: 18450
   });
 
   const chartData = [
@@ -25,107 +30,165 @@ const Dashboard = () => {
     { name: 'Sun', amount: 3490 },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1 }
-  };
-
   return (
-    <motion.div 
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-      className="p-8 space-y-8"
-    >
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left Side: Stats & 3D Card */}
-        <div className="flex-1 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <motion.div variants={itemVariants} className="glass-card p-8 group overflow-hidden relative">
-              <div className="neon-glow" />
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-3 bg-gold/10 rounded-xl text-gold"><Wallet size={24} /></div>
-                  <span className="text-success flex items-center text-xs font-bold bg-success/10 px-2 py-1 rounded-full">
-                    +12% <ArrowUpRight size={14} />
-                  </span>
-                </div>
-                <p className="text-textSecondary text-sm font-bold uppercase tracking-widest mb-1">Total Balance</p>
-                <h3 className="text-4xl font-black text-white">₹{stats.totalBalance.toLocaleString()}</h3>
-              </div>
-            </motion.div>
-            
-            <motion.div variants={itemVariants} className="glass-card p-8 border-l-4 border-l-gold">
-              <div className="flex justify-between items-start mb-4">
-                <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400"><TrendingUp size={24} /></div>
-              </div>
-              <p className="text-textSecondary text-sm font-bold uppercase tracking-widest mb-1">Monthly Spent</p>
-              <h3 className="text-4xl font-black text-white">₹{stats.monthlySpending.toLocaleString()}</h3>
-            </motion.div>
+    <div className="p-6 lg:p-10 max-w-[1600px] mx-auto">
+      {/* Header Section (Human Feel) */}
+      <header className="mb-10 flex justify-between items-end">
+        <div>
+          <span className="text-gold text-[10px] font-black uppercase tracking-[0.3em] mb-2 block">
+            Commander Overview
+          </span>
+          <h1 className="text-4xl font-black text-white tracking-tighter">
+            System <span className="text-gold/50">Pulse</span>
+          </h1>
+        </div>
+        <div className="text-right hidden md:block">
+          <p className="text-textSecondary text-xs font-medium uppercase tracking-widest">Global Status</p>
+          <div className="flex items-center gap-2 text-success font-bold text-sm">
+            Operational <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
           </div>
+        </div>
+      </header>
 
-          <motion.div variants={itemVariants} className="glass-card p-8 h-[400px]">
-            <h3 className="text-xl font-bold mb-8">Cash Flow Analysis</h3>
-            <div className="h-[300px] w-full">
+      {/* Main Bento Grid */}
+      <div className="bento-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-12 gap-6">
+        
+        {/* Total Balance (Monolith) */}
+        <BentoCard spanCols={2} spanRows={4} className="bg-gradient-to-br from-gold/10 to-transparent">
+          <div className="p-8 h-full flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-start mb-6">
+                <div className="p-4 bg-gold/10 rounded-2xl text-gold border border-gold/20 shadow-[0_0_20px_rgba(200,168,75,0.1)]">
+                  <Wallet size={28} />
+                </div>
+                <div className="flex gap-2">
+                  <button className="p-2 bg-white/5 rounded-xl hover:bg-gold/20 transition-colors">
+                    <Plus size={18} />
+                  </button>
+                  <button className="p-2 bg-white/5 rounded-xl hover:bg-gold/20 transition-colors">
+                    <Zap size={18} />
+                  </button>
+                </div>
+              </div>
+              <p className="text-textSecondary text-xs font-bold uppercase tracking-[0.2em] mb-2">Network Balance</p>
+              <h2 className="text-6xl font-black text-white tracking-tight">
+                ₹{stats.totalBalance.toLocaleString()}
+              </h2>
+            </div>
+            
+            <div className="flex items-center gap-4 mt-8 pt-8 border-t border-white/5">
+              <div className="flex -space-x-2">
+                {[1,2,3].map(i => (
+                  <div key={i} className="w-8 h-8 rounded-full border-2 border-darkBg bg-muted flex items-center justify-center text-[10px] font-bold">
+                    U{i}
+                  </div>
+                ))}
+              </div>
+              <p className="text-textSecondary text-[10px] font-medium">Shared across 3 interconnected vaults</p>
+            </div>
+          </div>
+        </BentoCard>
+
+        {/* Wealth Horizon (Unique Feature) */}
+        <BentoCard spanCols={2} spanRows={4}>
+          <WealthHorizon balance={stats.totalBalance} commitments={stats.commitments} />
+        </BentoCard>
+
+        {/* Cash Flow Chart */}
+        <BentoCard spanCols={3} spanRows={5}>
+          <div className="p-8 h-full flex flex-col">
+            <div className="flex justify-between items-center mb-10">
+              <h3 className="text-lg font-black text-white uppercase tracking-wider">Liquidity Stream</h3>
+              <div className="flex gap-3 text-[10px] font-bold uppercase tracking-widest text-textSecondary">
+                <span className="text-gold">Weekly</span>
+                <span className="hover:text-white cursor-pointer px-2">Monthly</span>
+                <span className="hover:text-white cursor-pointer px-2">Yearly</span>
+              </div>
+            </div>
+            <div className="flex-1 min-h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={chartData}>
                   <defs>
-                    <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#c8a84b" stopOpacity={0.3}/>
+                    <linearGradient id="colorStream" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#c8a84b" stopOpacity={0.2}/>
                       <stop offset="95%" stopColor="#c8a84b" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={10} />
-                  <YAxis hide />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#112240', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                    itemStyle={{ color: '#c8a84b' }}
+                    contentStyle={{ backgroundColor: '#04060e', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', backdropFilter: 'blur(20px)' }}
+                    cursor={{ stroke: '#c8a84b33', strokeWidth: 2 }}
                   />
-                  <Area type="monotone" dataKey="amount" stroke="#c8a84b" strokeWidth={4} fillOpacity={1} fill="url(#colorAmount)" />
+                  <Area 
+                    type="natural" 
+                    dataKey="amount" 
+                    stroke="#c8a84b" 
+                    strokeWidth={4} 
+                    fill="url(#colorStream)" 
+                    animationDuration={2000}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </BentoCard>
 
-        {/* Right Side: 3D Highlighting */}
-        <motion.div variants={itemVariants} className="lg:w-96 space-y-8">
-          <div className="glass-card p-8 bg-gradient-to-br from-gold/20 to-transparent border-gold/20">
-            <h3 className="text-sm font-black uppercase tracking-widest text-gold mb-4 text-center">Your Intelligent Vault</h3>
-            <ThreeDCard />
-            <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-textSecondary">Security Status</span>
-                <span className="text-success font-bold flex items-center gap-1"><ShieldCheck size={16}/> Encrypted</span>
+        {/* High Tech Card Status */}
+        <BentoCard spanCols={1} spanRows={5} className="bg-muted/50">
+          <div className="p-6 h-full flex flex-col justify-between">
+            <h3 className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-gold/60 mb-4">Active Cipher Card</h3>
+            <div className="scale-90 origin-top">
+              <ThreeDCard />
+            </div>
+            <div className="space-y-4 px-2">
+              <div className="flex justify-between items-center text-[10px] border-b border-white/5 pb-2">
+                <span className="text-textSecondary">Status</span>
+                <span className="text-success font-bold flex items-center gap-1"><ShieldCheck size={12}/> Shield Active</span>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-textSecondary">Card Number</span>
-                <span className="text-white font-mono">**** 8842</span>
+              <div className="flex justify-between items-center text-[10px]">
+                <span className="text-textSecondary">Limit</span>
+                <span className="text-white font-mono">₹5,00,000</span>
               </div>
             </div>
           </div>
+        </BentoCard>
 
-          <div className="glass-card p-6">
-            <h4 className="font-bold mb-4 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gold animate-pulse"></div>
-              Recent Insights
-            </h4>
-            <div className="space-y-4 text-sm text-textSecondary italic">
-              "Your spending in **Food** is 15% lower than last month. Great job!"
+        {/* Quick Action Tiles */}
+        <BentoCard spanCols={1} spanRows={3} className="hover:bg-gold/20 cursor-pointer group">
+          <div className="p-6 flex flex-col justify-center items-center h-full text-center">
+            <div className="mb-4 p-3 bg-gold/10 rounded-full group-hover:scale-110 transition-transform duration-500">
+              <Send size={24} className="text-gold" />
             </div>
+            <h4 className="text-sm font-bold text-white mb-1">Transfer</h4>
+            <p className="text-[10px] text-textSecondary uppercase tracking-widest">Instant Node</p>
           </div>
-        </motion.div>
+        </BentoCard>
+
+        <BentoCard spanCols={1} spanRows={3} className="hover:bg-red-500/10 cursor-pointer group border-red-500/20">
+          <div className="p-6 flex flex-col justify-center items-center h-full text-center">
+            <div className="mb-4 p-3 bg-red-500/10 rounded-full group-hover:bg-red-500 group-hover:text-white transition-all duration-500">
+              <Lock size={24} className="text-red-400 group-hover:text-white" />
+            </div>
+            <h4 className="text-sm font-bold text-white mb-1">Vault Lock</h4>
+            <p className="text-[10px] text-textSecondary uppercase tracking-widest text-red-500/50 font-black">Emergency</p>
+          </div>
+        </BentoCard>
+
+        <BentoCard spanCols={2} spanRows={3}>
+           <div className="p-6 flex h-full items-center gap-6">
+              <div className="p-4 bg-white/5 rounded-2xl">
+                <CreditCard size={32} className="text-textSecondary" />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-white italic">"Spending in **Entertainment** is 12% lower than usual. You're in control."</h4>
+                <p className="text-[10px] text-gold font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
+                  <Zap size={10} /> AI Insight Alpha-9
+                </p>
+              </div>
+           </div>
+        </BentoCard>
+
       </div>
-    </motion.div>
+    </div>
   );
 };
 

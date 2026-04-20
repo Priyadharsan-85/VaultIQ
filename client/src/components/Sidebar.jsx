@@ -7,59 +7,81 @@ const Sidebar = () => {
   const location = useLocation();
   
   const menuItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { name: 'Transactions', path: '/transactions', icon: ReceiptText },
-    { name: 'Fraud Alerts', path: '/fraud', icon: ShieldAlert },
-    { name: 'Market', path: '/market', icon: TrendingUp },
-    { name: 'Budget', path: '/budget', icon: WalletCards },
+    { name: 'Overview', path: '/', icon: LayoutDashboard },
+    { name: 'Ledger', path: '/transactions', icon: ReceiptText },
+    { name: 'Security', path: '/fraud', icon: ShieldAlert },
+    { name: 'Exchange', path: '/market', icon: TrendingUp },
+    { name: 'Treasurer', path: '/budget', icon: WalletCards },
   ];
 
   return (
-    <aside className="w-72 glass h-[calc(100vh-2rem)] m-4 border-r-0 py-8 flex flex-col z-50">
-      <div className="px-8 mb-12">
-        <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold to-goldHover flex items-center justify-center shadow-2xl shadow-gold/20"
-        >
-          <WalletCards size={32} className="text-darkBg" />
-        </motion.div>
-      </div>
-      
-      <nav className="flex-1 px-4 space-y-3">
-        {menuItems.map((item, i) => {
-          const Icon = item.icon;
-          const isActive = location.pathname === item.path;
-          return (
-            <motion.div
-              key={item.name}
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Link
-                to={item.path}
-                className={`group relative flex items-center space-x-4 px-6 py-4 rounded-2xl transition-all duration-300 ${
-                  isActive 
-                  ? 'bg-gold/10 text-gold border border-gold/20 shadow-lg shadow-gold/5' 
-                  : 'text-textSecondary hover:text-textPrimary hover:bg-white/5'
-                }`}
+    <aside className="w-80 h-full p-4 flex flex-col z-50">
+      <div className="glass h-full w-full rounded-[2.5rem] py-10 flex flex-col border border-white/5 shadow-2xl relative overflow-hidden">
+        {/* Subtle Decorative Gradient */}
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-gold/5 to-transparent pointer-events-none" />
+        
+        <div className="px-10 mb-16 relative z-10">
+          <motion.div 
+            whileHover={{ rotate: 5, scale: 1.05 }}
+            className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-gold to-accent flex items-center justify-center shadow-[0_20px_50px_-10px_rgba(200,168,75,0.3)]"
+          >
+            <WalletCards size={32} className="text-darkBg" />
+          </motion.div>
+        </div>
+        
+        <nav className="flex-1 px-6 space-y-2 relative z-10">
+          {menuItems.map((item, i) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <motion.div
+                key={item.name}
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
               >
-                {isActive && <motion.div layoutId="activeNav" className="absolute left-0 w-1.5 h-6 bg-gold rounded-full" />}
-                <Icon size={22} className={isActive ? 'text-gold' : 'group-hover:text-gold transition-colors'} />
-                <span className="font-bold text-sm tracking-wide">{item.name}</span>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </nav>
+                <Link
+                  to={item.path}
+                  className={`group relative flex items-center py-4 px-6 rounded-2xl transition-all duration-500 ${
+                    isActive 
+                    ? 'text-white' 
+                    : 'text-textSecondary hover:text-white'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activePill"
+                      className="absolute inset-0 bg-white/5 border border-white/10 rounded-2xl -z-10 shadow-inner"
+                    />
+                  )}
+                  {isActive && (
+                    <motion.div 
+                      layoutId="activeTracer"
+                      className="absolute left-0 w-1 h-6 bg-gold rounded-full"
+                    />
+                  )}
+                  <Icon size={20} className={`mr-4 transition-colors duration-500 ${isActive ? 'text-gold' : 'group-hover:text-gold/70'}`} />
+                  <span className={`text-sm font-black tracking-tight transition-all ${isActive ? 'translate-x-1' : 'group-hover:translate-x-1'}`}>
+                    {item.name}
+                  </span>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </nav>
 
-      <div className="px-6 mt-auto">
-        <div className="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md">
-          <p className="text-[10px] uppercase font-black tracking-[0.2em] text-textSecondary mb-2">VaultIQ Account</p>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-gold">Premium Pro</span>
-            <div className="w-2 h-2 rounded-full bg-gold animate-pulse shadow-glow"></div>
+        <div className="px-8 mt-auto relative z-10">
+          <div className="p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 backdrop-blur-3xl group cursor-pointer hover:bg-white/[0.04] transition-colors duration-500">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold">
+                <TrendingUp size={14} />
+              </div>
+              <span className="text-[10px] uppercase font-black tracking-widest text-textSecondary">Vault Status</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-white">Tier: Sovereign</span>
+              <div className="w-2 h-2 rounded-full bg-gold animate-pulse shadow-[0_0_10px_#c8a84b]"></div>
+            </div>
           </div>
         </div>
       </div>

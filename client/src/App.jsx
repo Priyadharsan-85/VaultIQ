@@ -12,17 +12,20 @@ import Budget from './pages/Budget';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import AuroraBackground from './components/AuroraBackground';
+import Noise from './components/Noise';
 
 import ChatAssistant from './components/ChatAssistant';
 
 const Layout = ({ children }) => {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden relative">
+      <Noise />
       <AuroraBackground />
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 z-10">
         <Navbar />
         <main className="flex-1 overflow-y-auto">
+          <div className="grain-overlay" />
           {children}
         </main>
       </div>

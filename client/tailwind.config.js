@@ -6,15 +6,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        darkBg: '#020617',
-        cardBg: 'rgba(17, 34, 64, 0.4)',
+        darkBg: '#04060e',
+        cardBg: 'rgba(255, 255, 255, 0.03)',
         gold: '#c8a84b',
         goldHover: '#b6963f',
-        accent: '#3b82f6',
+        accent: '#d4af37',
         success: '#10b981',
         danger: '#ef4444',
         textPrimary: '#f8fafc',
-        textSecondary: '#94a3b8',
+        textSecondary: '#64748b',
+        muted: '#1e293b',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
       animation: {
         'gradient-x': 'gradient-x 15s ease infinite',
