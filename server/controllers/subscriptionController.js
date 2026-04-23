@@ -47,7 +47,13 @@ exports.scanForSubscriptions = async (req, res) => {
           let sub = await Subscription.findOne({ where: { userId, merchantName: merchant } });
           
           const nextDate = new Date(date1);
-          nextDate.setDate(nextDate.getDate() + 30);
+          // If the last transaction was in the current month, show it on the calendar for this month
+          // otherwise set to 30 days ahead
+          if (nextDate.getMonth() === new Date().getMonth()) {
+            // Keep it as is for the calendar to show it
+          } else {
+            nextDate.setDate(nextDate.getDate() + 30);
+          }
 
           if (!sub) {
             sub = await Subscription.create({
@@ -72,6 +78,27 @@ exports.scanForSubscriptions = async (req, res) => {
     }
 
     res.json({ message: 'Scan complete', subscriptions: identifiedSubscriptions });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
+
+exports.cancelSubscription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const subscription = await Subscription.findOne({ 
+      where: { id, userId: req.user.id } 
+    });
+
+    if (!subscription) {
+      return res.status(404).json({ message: 'Subscription not found' });
+    }
+
+    subscription.status = 'cancelled';
+    await subscription.save();
+
+    res.json({ message: 'Subscription marked as cancelled in VaultIQ', subscription });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');

@@ -35,6 +35,7 @@ const seed = async () => {
     // 3. Seed Transactions (Mix of Income & Expense)
     const transactions = [
       { userId, amount: 85000, merchantName: 'Corporate Salary', category: 'Income', location: 'Remote', transactionTime: new Date('2026-04-01T10:00:00Z') },
+      { userId, amount: -22000, merchantName: 'Skyline Apartments', category: 'Bills', location: 'Delhi', transactionTime: new Date('2026-03-02T09:00:00Z') },
       { userId, amount: -22000, merchantName: 'Skyline Apartments', category: 'Bills', location: 'Delhi', transactionTime: new Date('2026-04-02T09:00:00Z') },
       { userId, amount: -1500, merchantName: 'Starbucks Coffee', category: 'Food', location: 'Mumbai', transactionTime: new Date('2026-04-05T15:30:00Z') },
       { userId, amount: -4500, merchantName: 'Amazon India', category: 'Shopping', location: 'Online', transactionTime: new Date('2026-04-07T12:00:00Z') },
@@ -42,6 +43,7 @@ const seed = async () => {
       { userId, amount: -2500, merchantName: 'PVR Cinemas', category: 'Entertainment', location: 'Mumbai', transactionTime: new Date('2026-04-12T20:00:00Z') },
       { userId, amount: -3200, merchantName: 'Whole Foods', category: 'Food', location: 'Mumbai', transactionTime: new Date('2026-04-15T11:00:00Z') },
       { userId, amount: -12000, merchantName: 'Unusual ATM Withdrawal', category: 'Cash', location: 'Beijing', transactionTime: new Date('2026-04-18T03:00:00Z'), isFraud: true, fraudConfidence: 0.88 },
+      { userId, amount: -500, merchantName: 'Netflix Subscription', category: 'Bills', location: 'Online', transactionTime: new Date('2026-03-19T10:00:00Z') },
       { userId, amount: -600, merchantName: 'Netflix Subscription', category: 'Bills', location: 'Online', transactionTime: new Date('2026-04-19T10:00:00Z') },
       { userId, amount: -4200, merchantName: 'Myntra Fashion', category: 'Shopping', location: 'Online', transactionTime: new Date('2026-04-20T14:00:00Z') },
     ];

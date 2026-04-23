@@ -7,5 +7,6 @@ router.use(authMiddleware);
 
 router.get('/stats', dashboardController.getStats);
 router.get('/runway', dashboardController.getRunway);
+router.get('/geo-spending', dashboardController.getGeoSpending);
 
 module.exports = router;

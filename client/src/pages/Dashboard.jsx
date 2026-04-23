@@ -49,8 +49,6 @@ const Dashboard = () => {
     fetchStats();
   }, []);
 
-  // Dummy data removed, using actual data in CashRunway component
-
   return (
     <div className="p-6 lg:p-10 max-w-[1600px] mx-auto">
       {/* Header Section (Human Feel) */}
@@ -112,7 +110,7 @@ const Dashboard = () => {
 
         {/* Wealth Horizon (Unique Feature) */}
         <BentoCard spanCols={2} spanRows={4}>
-          <WealthHorizon balance={stats.totalBalance} commitments={stats.commitments} />
+          <WealthHorizon />
         </BentoCard>
 
         {/* Cash Runway Chart */}
@@ -178,8 +176,8 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* Subscription Calendar */}
-        <BentoCard spanCols={4} spanRows={8} className="overflow-y-auto">
-          <div className="p-8 h-full">
+        <BentoCard spanCols={4} spanRows={12}>
+          <div className="p-8">
             <SubscriptionCalendar />
           </div>
         </BentoCard>

@@ -122,3 +122,45 @@ exports.getRunway = async (req, res) => {
     res.status(500).json({ message: 'Error calculating runway' });
   }
 };
+
+exports.getGeoSpending = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const transactions = await Transaction.findAll({ 
+      where: { 
+        userId,
+        location: { [Op.notIn]: ['Online', 'Remote'] }
+      },
+      limit: 50,
+      order: [['transactionTime', 'DESC']]
+    });
+
+    const cityCoords = {
+      'Mumbai': [19.0760, 72.8777],
+      'Delhi': [28.6139, 77.2090],
+      'Beijing': [39.9042, 116.4074],
+      'London': [51.5074, -0.1278],
+      'New York': [40.7128, -74.0060],
+      'Tokyo': [35.6762, 139.6503],
+      'Paris': [48.8566, 2.3522],
+      'Dubai': [25.2048, 55.2708]
+    };
+
+    const geoData = transactions.map(tx => {
+      const coords = cityCoords[tx.location] || [0, 0];
+      return {
+        id: tx.id,
+        merchantName: tx.merchantName,
+        amount: tx.amount,
+        lat: coords[0],
+        lng: coords[1],
+        location: tx.location
+      };
+    }).filter(d => d.lat !== 0);
+
+    res.json(geoData);
+  } catch (err) {
+    console.error('Geo Spending Error:', err);
+    res.status(500).json({ message: 'Error calculating geo spending' });
+  }
+};

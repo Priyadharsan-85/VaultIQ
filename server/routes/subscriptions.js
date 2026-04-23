@@ -7,5 +7,6 @@ router.use(authMiddleware);
 
 router.get('/', subscriptionController.getSubscriptions);
 router.post('/scan', subscriptionController.scanForSubscriptions);
+router.post('/cancel/:id', subscriptionController.cancelSubscription);
 
 module.exports = router;

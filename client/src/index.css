@@ -29,7 +29,7 @@
   .bento-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(12, 60px);
+    grid-auto-rows: 60px;
     gap: 1.5rem;
   }
 
