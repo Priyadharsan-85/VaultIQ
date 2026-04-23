@@ -11,6 +11,8 @@ import {
 import BentoCard from '../components/BentoCard';
 import WealthHorizon from '../components/WealthHorizon';
 import ThreeDCard from '../components/ThreeDCard';
+import CashRunway from '../components/CashRunway';
+import SubscriptionCalendar from '../components/SubscriptionCalendar';
 
 import axios from 'axios';
 
@@ -47,15 +49,7 @@ const Dashboard = () => {
     fetchStats();
   }, []);
 
-  const chartData = [
-    { name: 'Mon', amount: 4000 },
-    { name: 'Tue', amount: 3000 },
-    { name: 'Wed', amount: 5000 },
-    { name: 'Thu', amount: 2780 },
-    { name: 'Fri', amount: 1890 },
-    { name: 'Sat', amount: 2390 },
-    { name: 'Sun', amount: 3490 },
-  ];
+  // Dummy data removed, using actual data in CashRunway component
 
   return (
     <div className="p-6 lg:p-10 max-w-[1600px] mx-auto">
@@ -121,41 +115,10 @@ const Dashboard = () => {
           <WealthHorizon balance={stats.totalBalance} commitments={stats.commitments} />
         </BentoCard>
 
-        {/* Cash Flow Chart */}
+        {/* Cash Runway Chart */}
         <BentoCard spanCols={3} spanRows={5}>
           <div className="p-8 h-full flex flex-col min-h-[450px]">
-            <div className="flex justify-between items-center mb-10">
-              <h3 className="text-lg font-black text-white uppercase tracking-wider">Liquidity Stream</h3>
-              <div className="flex gap-3 text-[10px] font-bold uppercase tracking-widest text-textSecondary">
-                <span className="text-gold">Weekly</span>
-                <span className="hover:text-white cursor-pointer px-2">Monthly</span>
-                <span className="hover:text-white cursor-pointer px-2">Yearly</span>
-              </div>
-            </div>
-            <div className="flex-1 w-full h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData}>
-                  <defs>
-                    <linearGradient id="colorStream" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#c8a84b" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#c8a84b" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#04060e', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', backdropFilter: 'blur(20px)' }}
-                    cursor={{ stroke: '#c8a84b33', strokeWidth: 2 }}
-                  />
-                  <Area 
-                    type="natural" 
-                    dataKey="amount" 
-                    stroke="#c8a84b" 
-                    strokeWidth={4} 
-                    fill="url(#colorStream)" 
-                    animationDuration={2000}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            <CashRunway />
           </div>
         </BentoCard>
 
@@ -212,6 +175,13 @@ const Dashboard = () => {
                 </p>
               </div>
            </div>
+        </BentoCard>
+
+        {/* Subscription Calendar */}
+        <BentoCard spanCols={4} spanRows={8} className="overflow-y-auto">
+          <div className="p-8 h-full">
+            <SubscriptionCalendar />
+          </div>
         </BentoCard>
 
       </div>

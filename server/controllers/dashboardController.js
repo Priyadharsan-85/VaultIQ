@@ -56,3 +56,69 @@ exports.getStats = async (req, res) => {
     res.status(500).json({ message: 'Error calculating dashboard stats' });
   }
 };
+
+exports.getRunway = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const transactions = await Transaction.findAll({ where: { userId } });
+
+    const now = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+    thirtyDaysAgo.setHours(0,0,0,0);
+
+    let totalBalance = 0;
+    let changeLast30 = 0;
+    const dailyChanges = {};
+
+    transactions.forEach(tx => {
+      totalBalance += tx.amount;
+      const txDate = new Date(tx.transactionTime);
+      if (txDate >= thirtyDaysAgo) {
+        changeLast30 += tx.amount;
+        const dStr = txDate.toISOString().split('T')[0];
+        dailyChanges[dStr] = (dailyChanges[dStr] || 0) + tx.amount;
+      }
+    });
+
+    let balancePointer = totalBalance - changeLast30;
+    const historyData = [];
+
+    // Historical data (last 30 days)
+    for (let i = 0; i <= 30; i++) {
+      const d = new Date(thirtyDaysAgo);
+      d.setDate(d.getDate() + i);
+      const dStr = d.toISOString().split('T')[0];
+      
+      balancePointer += (dailyChanges[dStr] || 0);
+      historyData.push({
+        date: dStr,
+        balance: Math.round(balancePointer * 100) / 100,
+        isProjection: false
+      });
+    }
+
+    // Average daily flow for projection
+    const averageDailyFlow = changeLast30 / 30;
+    let projBalance = totalBalance;
+
+    // Projected data (next 90 days)
+    for (let i = 1; i <= 90; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const dStr = d.toISOString().split('T')[0];
+      
+      projBalance += averageDailyFlow;
+      historyData.push({
+        date: dStr,
+        balance: Math.round(projBalance * 100) / 100,
+        isProjection: true
+      });
+    }
+
+    res.json(historyData);
+  } catch (err) {
+    console.error('Runway Error:', err);
+    res.status(500).json({ message: 'Error calculating runway' });
+  }
+};

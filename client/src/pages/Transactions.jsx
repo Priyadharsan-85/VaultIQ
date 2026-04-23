@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, ArrowDownNarrowWide, X, Calendar, MapPin, Tag } from 'lucide-react';
+import { Plus, Search, Filter, ArrowDownNarrowWide, X, Calendar, MapPin, Tag, Camera } from 'lucide-react';
+import ReceiptScanner from '../components/ReceiptScanner';
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showScannerModal, setShowScannerModal] = useState(false);
   const [newTx, setNewTx] = useState({
     amount: '', merchantName: '', category: 'Shopping', location: 'Mumbai'
   });
@@ -49,13 +51,22 @@ const Transactions = () => {
               className="bg-white/[0.03] border border-white/5 rounded-2xl py-3.5 pl-12 pr-6 text-sm focus:border-gold/30 outline-none w-64 lg:w-80 transition-all duration-500 hover:bg-white/[0.05]" 
             />
           </div>
-          <button 
-            onClick={() => setShowModal(true)}
-            className="btn-premium flex items-center gap-3"
-          >
-            <Plus size={20} />
-            <span className="font-black text-xs uppercase tracking-widest">New Entry</span>
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setShowScannerModal(true)}
+              className="btn-premium flex items-center gap-3 !bg-white/5 !text-white hover:!bg-gold hover:!text-darkBg border border-white/10"
+            >
+              <Camera size={20} />
+              <span className="font-black text-xs uppercase tracking-widest hidden sm:inline">Scan Receipt</span>
+            </button>
+            <button 
+              onClick={() => setShowModal(true)}
+              className="btn-premium flex items-center gap-3"
+            >
+              <Plus size={20} />
+              <span className="font-black text-xs uppercase tracking-widest">New Entry</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -206,6 +217,29 @@ const Transactions = () => {
                   <button type="submit" className="flex-[2] btn-premium py-5">Commit Ledger Entry</button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showScannerModal && (
+          <div className="fixed inset-0 bg-darkBg/95 backdrop-blur-xl flex items-center justify-center p-4 z-[100]">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 30 }}
+              transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.6 }}
+              className="glass p-10 w-full max-w-xl relative shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]"
+            >
+              <ReceiptScanner 
+                onClose={() => setShowScannerModal(false)} 
+                onScanComplete={(newTx) => {
+                  setShowScannerModal(false);
+                  fetchTransactions(); // Refresh the list
+                  // Optional: Show a toast notification here
+                }}
+              />
             </motion.div>
           </div>
         )}
