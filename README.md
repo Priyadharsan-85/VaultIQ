@@ -30,9 +30,9 @@
 
 **NexaGuard** is not just another finance app. It's a **production-grade, AI-powered financial intelligence platform** that combines three powerful capabilities into one unified dashboard:
 
-| Budget Tracking | Fraud Detection | Live Markets |
-|---|---|---|
-| Track every rupee across categories in real-time | ML model flags suspicious transactions instantly | Live crypto & stock prices updating every 30s |
+| Budget Tracking | Fraud Detection | Live Markets | Subscription Management |
+|---|---|---|---|
+| Track every rupee across categories in real-time | ML model flags suspicious transactions instantly | Live crypto & stock prices updating every 30s | Track, visualize, and auto-cancel subscriptions via Bill Matrix |
 
 Think of NexaGuard as your **personal bank manager, fraud investigator, and market analyst** — all working 24/7, all in one place.
 
@@ -69,6 +69,17 @@ Think of NexaGuard as your **personal bank manager, fraud investigator, and mark
   - Unusual merchant categories
 - Returns **confidence score (0–100%)** for every flagged transaction
 - Instant alerts with fraud reason
+
+### 🇮🇳 Indian Banking Integration (Setu AA)
+- Seamless connection with Indian banks via Setu API (Account Aggregator)
+- Consent-driven financial data fetching
+- Live balance and transaction syncing across multiple Indian bank accounts
+
+### 📅 Bill Matrix & Subscription Assistant
+- Visual calendar grid tracking all recurring payments
+- Auto-detects price hikes and anomalies in subscriptions
+- "Termination Assistant" provides direct cancellation links and pre-written email templates
+- One-click "Mark as Liquidated" to stop tracking cancelled services
 
 ###  Live Market Tracker
 - **Crypto:** Bitcoin, Ethereum, Solana, Cardano, Dogecoin
@@ -109,7 +120,7 @@ Think of NexaGuard as your **personal bank manager, fraud investigator, and mark
            │
 ┌──────────▼──────────────────────────────────────────────┐
 │              External APIs                              │
-│   CoinGecko (Crypto) · Alpha Vantage (Stocks)           │
+│   Setu (Banking) · CoinGecko (Crypto) · Alpha Vantage   │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -123,8 +134,9 @@ Think of NexaGuard as your **personal bank manager, fraud investigator, and mark
 | **Charts** | Recharts | Data Visualization |
 | **Backend** | Node.js + Express.js | API & Business Logic |
 | **Auth** | JWT + Bcryptjs | Secure Authentication |
-| **Database** | PostgreSQL + Sequelize | Data Persistence |
+| **Database** | PostgreSQL + Sequelize / SQLite | Data Persistence |
 | **ML Service** | Python + Flask + scikit-learn | Fraud Detection |
+| **Banking API** | Setu Account Aggregator | Live Indian Bank Data |
 | **Crypto API** | CoinGecko | Live Crypto Prices |
 | **Stock API** | Alpha Vantage | Live Stock Prices |
 | **Container** | Docker + Docker Compose | Deployment |
@@ -251,6 +263,8 @@ ML_SERVICE_URL=http://localhost:8000
 # External APIs
 COINGECKO_API_URL=https://api.coingecko.com/api/v3
 ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
+SETU_CLIENT_ID=your_setu_client_id
+SETU_SECRET=your_setu_secret
 ```
 
 ---
@@ -283,12 +297,13 @@ ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
 | GET | `/api/market/crypto` | Live crypto prices |
 | GET | `/api/market/stocks` | Live stock prices |
 
-### Budget
+### Budget & Subscriptions
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/budget` | Get all budgets |
 | POST | `/api/budget/set` | Set category budget |
-| PUT | `/api/budget/update/:category` | Update budget limit |
+| GET | `/api/subscriptions` | Get active subscriptions |
+| POST | `/api/subscriptions/cancel/:id` | Liquidate subscription |
 
 ---
 
