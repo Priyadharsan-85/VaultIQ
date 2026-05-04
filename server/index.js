@@ -8,7 +8,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
@@ -21,6 +25,7 @@ app.use('/api/ai', require('./routes/ai'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/subscriptions', require('./routes/subscriptions'));
 app.use('/api/goals', require('./routes/goals'));
+app.use('/api/setu', require('./routes/setu'));
 
 process.on('uncaughtException', (err) => {
   console.error('💥 Uncaught Exception:', err);
@@ -37,13 +42,6 @@ sequelize.sync().then(() => {
     console.log(`🚀 AI Server running on port ${PORT}`);
     console.log(`📡 URL: http://localhost:${PORT}`);
   });
-
-  // Keep-alive for nodemon/agent stability
-  setInterval(() => {
-    if (server && server.listening) {
-      // Keep process alive
-    }
-  }, 1000);
 
 }).catch(err => {
   console.error('❌ Failed to sync database:', err);

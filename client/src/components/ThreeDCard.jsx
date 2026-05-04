@@ -30,8 +30,7 @@ const CardMesh = () => {
 const ThreeDCard = () => {
   return (
     <div className="h-64 w-full cursor-grab active:cursor-grabbing">
-      <Canvas>
-        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
+      <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} color="#c8a84b" />
         <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} />

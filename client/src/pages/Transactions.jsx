@@ -11,15 +11,25 @@ const Transactions = () => {
   const [newTx, setNewTx] = useState({
     amount: '', merchantName: '', category: 'Shopping', location: 'Mumbai'
   });
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('All');
 
   const fetchTransactions = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/transactions`);
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/transactions`, {
+        params: { search, category }
+      });
       setTransactions(res.data);
     } catch (err) { console.error(err); }
   };
 
-  useEffect(() => { fetchTransactions(); }, []);
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      fetchTransactions();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, category]);
 
   const handleAddTransaction = async (e) => {
     e.preventDefault();
@@ -29,6 +39,34 @@ const Transactions = () => {
       fetchTransactions();
       setNewTx({ amount: '', merchantName: '', category: 'Shopping', location: 'Mumbai' });
     } catch (err) { alert('Failed to add transaction'); }
+  };
+
+  const handleExport = () => {
+    if (transactions.length === 0) return alert('No data to export');
+    
+    const headers = ['ID', 'Merchant', 'Amount', 'Category', 'Location', 'Date', 'Status'];
+    const csvRows = [
+      headers.join(','),
+      ...transactions.map(t => [
+        t.id,
+        `"${t.merchantName}"`,
+        t.amount,
+        t.category,
+        t.location,
+        new Date(t.transactionTime).toLocaleDateString(),
+        t.isFraud ? 'Anomalous' : 'Verified'
+      ].join(','))
+    ];
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `NexaGuard_Transactions_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -48,6 +86,8 @@ const Transactions = () => {
             <input 
               type="text" 
               placeholder="Query merchant..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="bg-white/[0.03] border border-white/5 rounded-2xl py-3.5 pl-12 pr-6 text-sm focus:border-gold/30 outline-none w-64 lg:w-80 transition-all duration-500 hover:bg-white/[0.05]" 
             />
           </div>
@@ -73,14 +113,26 @@ const Transactions = () => {
       <div className="glass-card overflow-hidden">
         <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
            <div className="flex gap-3">
-             <button className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-gold/10 rounded-xl text-xs font-bold text-textSecondary hover:text-gold transition-all">
-              <Filter size={14}/> Filters
-             </button>
-             <button className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-gold/10 rounded-xl text-xs font-bold text-textSecondary hover:text-gold transition-all">
-              <Calendar size={14}/> Last 30 Days
-             </button>
+              <select 
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-gold/10 rounded-xl text-xs font-bold text-textSecondary hover:text-gold transition-all outline-none border-none appearance-none"
+              >
+                <option value="All">All Categories</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Food">Food</option>
+                <option value="Travel">Travel</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Bills">Bills</option>
+              </select>
+              <button className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-gold/10 rounded-xl text-xs font-bold text-textSecondary hover:text-gold transition-all">
+               <Calendar size={14}/> Last 30 Days
+              </button>
            </div>
-           <button className="text-[10px] font-black uppercase tracking-widest text-gold flex items-center gap-2 hover:opacity-70 transition-opacity">
+           <button 
+            onClick={handleExport}
+            className="text-[10px] font-black uppercase tracking-widest text-gold flex items-center gap-2 hover:opacity-70 transition-opacity"
+           >
             Export Dataset <ArrowDownNarrowWide size={14}/>
            </button>
         </div>

@@ -2,9 +2,31 @@ const Transaction = require('../models/Transaction');
 const axios = require('axios');
 require('dotenv').config();
 
+const { Op } = require('sequelize');
+
 exports.getTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.findAll({ where: { userId: req.user.id } });
+    const { search, category, startDate, endDate } = req.query;
+    const where = { userId: req.user.id };
+
+    if (search) {
+      where.merchantName = { [Op.like]: `%${search}%` };
+    }
+
+    if (category && category !== 'All') {
+      where.category = category;
+    }
+
+    if (startDate || endDate) {
+      where.transactionTime = {};
+      if (startDate) where.transactionTime[Op.gte] = new Date(startDate);
+      if (endDate) where.transactionTime[Op.lte] = new Date(endDate);
+    }
+
+    const transactions = await Transaction.findAll({ 
+      where,
+      order: [['transactionTime', 'DESC']]
+    });
     res.json(transactions);
   } catch (err) {
     console.error(err.message);

@@ -84,12 +84,12 @@ const CashRunway = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const isProj = payload[0].dataKey === 'projected' || (payload[1] && payload[1].dataKey === 'projected');
-      const val = payload[0].value || (payload[1] && payload[1].value);
+      const val = payload[0].value !== undefined ? payload[0].value : (payload[1] ? payload[1].value : 0);
       
       return (
         <div className="glass p-4 border border-white/10 shadow-2xl">
           <p className="text-textSecondary text-[10px] font-black uppercase tracking-widest mb-1">{label} {isProj && '(Predicted)'}</p>
-          <p className="text-white text-lg font-black tracking-tighter">₹{val.toLocaleString()}</p>
+          <p className="text-white text-lg font-black tracking-tighter">₹{(val || 0).toLocaleString()}</p>
         </div>
       );
     }
@@ -112,8 +112,8 @@ const CashRunway = () => {
         </div>
       </div>
 
-      <div className="flex-1 min-h-[200px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="flex-1 w-full relative" style={{ minHeight: '300px' }}>
+        <ResponsiveContainer width="99%" height="100%" debounce={100} minWidth={100} minHeight={100}>
           <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorHistorical" x1="0" y1="0" x2="0" y2="1">

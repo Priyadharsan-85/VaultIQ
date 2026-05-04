@@ -5,12 +5,12 @@ const seed = async () => {
   try {
     await sequelize.sync();
     console.log('Purging stale identity data...');
-    await User.destroy({ where: { email: 'demo@vaultiq.com' } });
+    await User.destroy({ where: { email: 'demo@nexaguard.com' } });
     
     console.log('Restoring Demo Commander account...');
     const user = await User.create({
       name: 'Commander Demo',
-      email: 'demo@vaultiq.com',
+      email: 'demo@nexaguard.com',
       password: '$2b$10$muE1U29r5LoY7FWLWz.G1ehLVVVmbPWftU4NtUs5TJY5WRn2Z33W6' // demo123
     });
 

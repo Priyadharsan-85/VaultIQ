@@ -9,9 +9,45 @@ const FraudAlerts = () => {
 
   const fetchAlerts = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/fraud/alerts`);
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/fraud/alerts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setAlerts(res.data);
     } catch (err) { console.error(err); }
+  };
+
+  const handleClearLogs = () => {
+    if (alerts.length === 0) return;
+    if (window.confirm("Are you sure you want to purge security logs? This action is irreversible.")) {
+      setAlerts([]);
+      alert("Security logs purged from active memory.");
+    }
+  };
+
+  const handleExportReport = () => {
+    if (alerts.length === 0) return alert("No threat data to export.");
+    
+    const headers = ['ID', 'Transaction ID', 'Merchant', 'Amount', 'Confidence', 'Timestamp', 'Status'];
+    const csvRows = [
+      headers.join(','),
+      ...alerts.map(a => [
+        a.id,
+        a.transactionId,
+        `"${a.Transaction?.merchantName || 'Unknown'}"`,
+        a.Transaction?.amount || 0,
+        `${(a.Transaction?.fraudConfidence * 100 || 0).toFixed(2)}%`,
+        new Date(a.createdAt).toISOString(),
+        a.status
+      ].join(','))
+    ];
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `NexaGuard_Security_Report_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
   };
 
   useEffect(() => { fetchAlerts(); }, []);
@@ -74,13 +110,13 @@ const FraudAlerts = () => {
             <div className="relative z-10">
               <h3 className="text-3xl font-black text-white mb-3 tracking-tight">Systems <span className="text-success/50">Nominal</span></h3>
               <p className="text-textSecondary text-sm max-w-md mx-auto leading-relaxed">
-                VaultIQ Threat Radar reports clear airspace. Your assets are currently isolated within our encrypted sovereign cloud nodes.
+                NexaGuard Threat Radar reports clear airspace. Your assets are currently isolated within our encrypted sovereign cloud nodes.
               </p>
             </div>
 
             <div className="flex gap-4 relative z-10">
-               <button className="px-8 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-textSecondary transition-all">Clear Logs</button>
-               <button className="px-8 py-3 bg-success/20 hover:bg-success/30 rounded-xl text-[10px] font-black uppercase tracking-widest text-success transition-all">Export Report</button>
+               <button onClick={handleClearLogs} className="px-8 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-textSecondary transition-all">Clear Logs</button>
+               <button onClick={handleExportReport} className="px-8 py-3 bg-success/20 hover:bg-success/30 rounded-xl text-[10px] font-black uppercase tracking-widest text-success transition-all">Export Report</button>
             </div>
           </motion.div>
         )}

@@ -10,7 +10,7 @@ const BudgetMeter = ({ category, spent, limit }) => {
       <div className="flex justify-between items-end">
         <div>
           <h4 className="text-lg font-black text-white">{category}</h4>
-          <p className="text-xs text-textSecondary font-bold">₹{spent.toLocaleString()} / ₹{limit.toLocaleString()}</p>
+          <p className="text-xs text-textSecondary font-bold">₹{(spent || 0).toLocaleString()} / ₹{(limit || 0).toLocaleString()}</p>
         </div>
         <span className={`text-xs font-black uppercase tracking-widest ${isOver ? 'text-red-400' : 'text-gold'}`}>
           {Math.round(percentage)}%
@@ -28,7 +28,7 @@ const BudgetMeter = ({ category, spent, limit }) => {
 
       <div className="flex justify-between text-[10px] font-bold text-textSecondary uppercase tracking-tighter italic">
         <span>Starting ₹0</span>
-        <span>Limit ₹{limit.toLocaleString()}</span>
+        <span>Limit ₹{(limit || 0).toLocaleString()}</span>
       </div>
     </div>
   );

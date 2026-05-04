@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const BentoCard = ({ children, className = "", spanCols = 1, spanRows = 1 }) => {
+const BentoCard = ({ children, className = "", spanCols = 1, spanRows = 1, onClick }) => {
   const colClass = {
     1: 'lg:col-span-1',
     2: 'lg:col-span-2',
@@ -37,6 +37,7 @@ const BentoCard = ({ children, className = "", spanCols = 1, spanRows = 1 }) => 
         ease: [0.16, 1, 0.3, 1] 
       }}
       className={`glass-card relative overflow-hidden group ${colClass} ${rowClass} ${className}`}
+      onClick={onClick}
     >
       <div className="neon-glow" />
       <div className="relative z-10 h-full w-full">

@@ -105,7 +105,7 @@ const WealthHorizon = () => {
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-textSecondary mb-1">Avg Progress</p>
                 <h4 className="text-4xl font-black text-white">
-                  {Math.round(goals.reduce((acc, g) => acc + (g.currentAmount/g.targetAmount), 0) / goals.length * 100)}%
+                  {goals.length > 0 ? Math.round(goals.reduce((acc, g) => acc + (g.currentAmount/g.targetAmount), 0) / goals.length * 100) : 0}%
                 </h4>
               </div>
             </>
@@ -125,7 +125,7 @@ const WealthHorizon = () => {
               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: goal.color }} />
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-white">{goal.title}</p>
-                <p className="text-[10px] text-textSecondary">₹{goal.currentAmount.toLocaleString()} / ₹{goal.targetAmount.toLocaleString()}</p>
+                <p className="text-[10px] text-textSecondary">₹{(goal.currentAmount || 0).toLocaleString()} / ₹{(goal.targetAmount || 0).toLocaleString()}</p>
               </div>
             </div>
             <ChevronRight size={14} className="text-textSecondary group-hover:text-gold transition-colors" />

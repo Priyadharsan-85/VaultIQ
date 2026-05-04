@@ -33,11 +33,14 @@ exports.register = async (req, res) => {
 
     res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (err) {
-    console.error('Registration Crash:', err.message);
+    console.error('Registration Crash:', err);
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ message: 'Email already in use by another commander.' });
+    }
     if (err.name === 'SequelizeValidationError') {
       return res.status(400).json({ message: 'Invalid data format: ' + err.errors[0].message });
     }
-    res.status(500).send('Server error');
+    res.status(500).json({ message: 'Internal Server Error during registration', detail: err.message });
   }
 };
 

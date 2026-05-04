@@ -70,7 +70,7 @@ const Login = () => {
         </form>
 
         <p className="mt-10 text-center text-textSecondary text-sm font-bold">
-          New to VaultIQ? <Link to="/register" className="text-gold hover:underline">Create a free account</Link>
+          New to NexaGuard? <Link to="/register" className="text-gold hover:underline">Create a free account</Link>
         </p>
       </motion.div>
 

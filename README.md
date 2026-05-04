@@ -26,15 +26,15 @@
 
 ---
 
-##  What is VaultIQ?
+##  What is NexaGuard?
 
-**VaultIQ** is not just another finance app. It's a **production-grade, AI-powered financial intelligence platform** that combines three powerful capabilities into one unified dashboard:
+**NexaGuard** is not just another finance app. It's a **production-grade, AI-powered financial intelligence platform** that combines three powerful capabilities into one unified dashboard:
 
 | Budget Tracking | Fraud Detection | Live Markets |
 |---|---|---|
 | Track every rupee across categories in real-time | ML model flags suspicious transactions instantly | Live crypto & stock prices updating every 30s |
 
-Think of VaultIQ as your **personal bank manager, fraud investigator, and market analyst** — all working 24/7, all in one place.
+Think of NexaGuard as your **personal bank manager, fraud investigator, and market analyst** — all working 24/7, all in one place.
 
 ---
 
@@ -134,7 +134,7 @@ Think of VaultIQ as your **personal bank manager, fraud investigator, and market
 ## Project Structure
 
 ```
-VaultIQ/
+NexaGuard/
 │
 ├── 📂 client/                      # React Frontend
 │   └── src/
@@ -237,7 +237,7 @@ NODE_ENV=development
 # Database
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=vaultiq
+DB_NAME=nexaguard
 DB_USER=postgres
 DB_PASSWORD=yourpassword
 
@@ -375,9 +375,9 @@ CREATE TABLE budgets (
 
 ---
 
-## Why VaultIQ Stands Out
+## Why NexaGuard Stands Out
 
-| Feature | VaultIQ | Regular Finance Apps |
+| Feature | NexaGuard | Regular Finance Apps |
 |---------|---------|---------------------|
 | AI Fraud Detection | ✅ Real ML Model | ❌ Rule-based only |
 | Confidence Scoring | ✅ 0-100% score | ❌ Just yes/no |
@@ -390,7 +390,7 @@ CREATE TABLE budgets (
 
 ## Real-World Inspiration
 
-VaultIQ is inspired by how the world's top financial institutions protect their customers:
+NexaGuard is inspired by how the world's top financial institutions protect their customers:
 
 > **JPMorgan Chase** — Processes trillions daily with real-time fraud detection  
 > **PayPal** — Flags suspicious payments using ML anomaly detection  
@@ -405,7 +405,7 @@ Contributions are welcome! Here's how:
 
 ```bash
 # Fork the repo
-git fork https://github.com/yourusername/VaultIQ
+git fork https://github.com/yourusername/NexaGuard
 
 # Create feature branch
 git checkout -b feature/your-feature-name

@@ -39,7 +39,7 @@ const Register = () => {
           >
             <UserPlus size={32} className="text-darkBg" />
           </motion.div>
-          <h2 className="text-4xl font-black text-white tracking-tighter mb-2">Join VaultIQ</h2>
+          <h2 className="text-4xl font-black text-white tracking-tighter mb-2">Join NexaGuard</h2>
           <p className="text-textSecondary text-sm font-medium">Create your secure financial intelligence profile</p>
         </div>
 

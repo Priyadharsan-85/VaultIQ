@@ -13,6 +13,7 @@ import WealthHorizon from '../components/WealthHorizon';
 import ThreeDCard from '../components/ThreeDCard';
 import CashRunway from '../components/CashRunway';
 import SubscriptionCalendar from '../components/SubscriptionCalendar';
+import IndianBankConnect from '../components/IndianBankConnect';
 
 import axios from 'axios';
 
@@ -26,6 +27,13 @@ const Dashboard = () => {
     savingsRate: 0
   });
   const [loading, setLoading] = useState(true);
+  const [insight, setInsight] = useState('Analyzing your financial flow...');
+  const [isLocked, setIsLocked] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [showTopUpModal, setShowTopUpModal] = useState(false);
+  const [topUpAmount, setTopUpAmount] = useState('');
+  const [transferData, setTransferData] = useState({ to: '', amount: '' });
+  const [refreshingInsight, setRefreshingInsight] = useState(false);
 
   const fetchStats = async () => {
     try {
@@ -45,9 +53,50 @@ const Dashboard = () => {
     }
   };
 
+  const fetchInsight = async () => {
+    setRefreshingInsight(true);
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/ai/insight`);
+      setInsight(res.data.insight);
+    } catch (err) { 
+      console.error(err); 
+    } finally {
+      setRefreshingInsight(false);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
+    fetchInsight();
   }, []);
+
+  const handleTransfer = (e) => {
+    e.preventDefault();
+    alert(`Initiating secure transfer of ₹${transferData.amount} to Node ${transferData.to}... Connection established.`);
+    setShowTransferModal(false);
+    setTransferData({ to: '', amount: '' });
+  };
+
+  const handleTopUp = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      // Create a special transaction for top-up
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/transactions/add`, {
+        amount: parseFloat(topUpAmount),
+        merchantName: 'NexaGuard Top-Up',
+        category: 'Income',
+        location: 'System'
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      
+      setShowTopUpModal(false);
+      setTopUpAmount('');
+      fetchStats();
+      alert('Quantum influx successful. Balance updated.');
+    } catch (err) {
+      alert('Influx failed. Check system connection.');
+    }
+  };
 
   return (
     <div className="p-6 lg:p-10 max-w-[1600px] mx-auto">
@@ -81,10 +130,16 @@ const Dashboard = () => {
                   <Wallet size={28} />
                 </div>
                 <div className="flex gap-2">
-                  <button className="p-2 bg-white/5 rounded-xl hover:bg-gold/20 transition-colors">
+                  <button 
+                    onClick={() => setShowTopUpModal(true)}
+                    className="p-2 bg-white/5 rounded-xl hover:bg-gold/20 transition-colors"
+                  >
                     <Plus size={18} />
                   </button>
-                  <button className="p-2 bg-white/5 rounded-xl hover:bg-gold/20 transition-colors">
+                  <button 
+                    onClick={fetchInsight}
+                    className={`p-2 bg-white/5 rounded-xl hover:bg-gold/20 transition-colors ${refreshingInsight ? 'animate-spin text-gold' : ''}`}
+                  >
                     <Zap size={18} />
                   </button>
                 </div>
@@ -105,6 +160,16 @@ const Dashboard = () => {
               </div>
               <p className="text-textSecondary text-[10px] font-medium">Shared across 3 interconnected vaults</p>
             </div>
+          </div>
+        </BentoCard>
+
+        {/* Plaid Bank Connection */}
+        <BentoCard spanCols={2} spanRows={2}>
+          <div className="h-full flex flex-col justify-center">
+            <IndianBankConnect onSyncSuccess={() => {
+              fetchStats();
+              fetchInsight();
+            }} />
           </div>
         </BentoCard>
 
@@ -141,7 +206,11 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* Quick Action Tiles */}
-        <BentoCard spanCols={1} spanRows={3} className="hover:bg-gold/20 cursor-pointer group">
+        <BentoCard 
+          spanCols={1} spanRows={3} 
+          className="hover:bg-gold/20 cursor-pointer group"
+          onClick={() => setShowTransferModal(true)}
+        >
           <div className="p-6 flex flex-col justify-center items-center h-full text-center">
             <div className="mb-4 p-3 bg-gold/10 rounded-full group-hover:scale-110 transition-transform duration-500">
               <Send size={24} className="text-gold" />
@@ -151,13 +220,19 @@ const Dashboard = () => {
           </div>
         </BentoCard>
 
-        <BentoCard spanCols={1} spanRows={3} className="hover:bg-red-500/10 cursor-pointer group border-red-500/20">
+        <BentoCard 
+          spanCols={1} spanRows={3} 
+          className={`cursor-pointer group transition-all duration-500 ${isLocked ? 'bg-red-500/20 border-red-500/50' : 'hover:bg-red-500/10 border-red-500/20'}`}
+          onClick={() => setIsLocked(!isLocked)}
+        >
           <div className="p-6 flex flex-col justify-center items-center h-full text-center">
-            <div className="mb-4 p-3 bg-red-500/10 rounded-full group-hover:bg-red-500 group-hover:text-white transition-all duration-500">
-              <Lock size={24} className="text-red-400 group-hover:text-white" />
+            <div className={`mb-4 p-3 rounded-full transition-all duration-500 ${isLocked ? 'bg-red-500 text-white scale-110 shadow-[0_0_20px_rgba(239,68,68,0.4)]' : 'bg-red-500/10 text-red-400 group-hover:bg-red-500 group-hover:text-white'}`}>
+              <Lock size={24} />
             </div>
-            <h4 className="text-sm font-bold text-white mb-1">Vault Lock</h4>
-            <p className="text-[10px] text-textSecondary uppercase tracking-widest text-red-500/50 font-black">Emergency</p>
+            <h4 className="text-sm font-bold text-white mb-1">{isLocked ? 'Vault Secured' : 'Vault Lock'}</h4>
+            <p className={`text-[10px] uppercase tracking-widest font-black ${isLocked ? 'text-red-400' : 'text-red-500/50'}`}>
+              {isLocked ? 'SHIELD ACTIVE' : 'EMERGENCY'}
+            </p>
           </div>
         </BentoCard>
 
@@ -167,7 +242,7 @@ const Dashboard = () => {
                 <CreditCard size={32} className="text-textSecondary" />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white italic">"Spending in **Entertainment** is 12% lower than usual. You're in control."</h4>
+                <h4 className="text-lg font-bold text-white italic">"{insight}"</h4>
                 <p className="text-[10px] text-gold font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
                   <Zap size={10} /> AI Insight Alpha-9
                 </p>
@@ -183,6 +258,69 @@ const Dashboard = () => {
         </BentoCard>
 
       </div>
+
+      {/* Top Up Modal */}
+      {showTopUpModal && (
+        <div className="fixed inset-0 bg-darkBg/95 backdrop-blur-xl flex items-center justify-center p-4 z-[100]">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="glass p-10 w-full max-w-md relative"
+          >
+            <h3 className="text-2xl font-black text-white mb-8 tracking-tighter">Quantum <span className="text-gold/50">Influx</span></h3>
+            <form onSubmit={handleTopUp} className="space-y-6">
+              <div>
+                <label className="text-[10px] uppercase font-black text-textSecondary mb-2 block">Amount to Inject (₹)</label>
+                <input 
+                  type="number" required placeholder="50000"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none"
+                  value={topUpAmount}
+                  onChange={e => setTopUpAmount(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setShowTopUpModal(false)} className="flex-1 text-xs font-black uppercase text-textSecondary">Cancel</button>
+                <button type="submit" className="flex-[2] btn-premium py-4">Confirm Influx</button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+      {showTransferModal && (
+        <div className="fixed inset-0 bg-darkBg/95 backdrop-blur-xl flex items-center justify-center p-4 z-[100]">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="glass p-10 w-full max-w-md relative"
+          >
+            <h3 className="text-2xl font-black text-white mb-8 tracking-tighter">Initiate <span className="text-gold/50">Node Transfer</span></h3>
+            <form onSubmit={handleTransfer} className="space-y-6">
+              <div>
+                <label className="text-[10px] uppercase font-black text-textSecondary mb-2 block">Destination Node</label>
+                <input 
+                  type="text" required placeholder="0x... or Wallet ID"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none"
+                  value={transferData.to}
+                  onChange={e => setTransferData({...transferData, to: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-black text-textSecondary mb-2 block">Quantum (₹)</label>
+                <input 
+                  type="number" required placeholder="0.00"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none"
+                  value={transferData.amount}
+                  onChange={e => setTransferData({...transferData, amount: e.target.value})}
+                />
+              </div>
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setShowTransferModal(false)} className="flex-1 text-xs font-black uppercase text-textSecondary">Abort</button>
+                <button type="submit" className="flex-[2] btn-premium py-4">Execute Transfer</button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

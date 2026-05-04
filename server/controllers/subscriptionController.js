@@ -98,7 +98,7 @@ exports.cancelSubscription = async (req, res) => {
     subscription.status = 'cancelled';
     await subscription.save();
 
-    res.json({ message: 'Subscription marked as cancelled in VaultIQ', subscription });
+    res.json({ message: 'Subscription marked as cancelled in NexaGuard', subscription });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
